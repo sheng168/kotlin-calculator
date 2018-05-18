@@ -18,6 +18,7 @@
 
         <junit.version>4.12</junit.version>
         <kluent.version>1.38</kluent.version>
+        <jacoco.version>0.8.1</jacoco.version>
     </properties>
 
     <repositories>
@@ -58,6 +59,11 @@
                     <groupId>org.jetbrains.kotlin</groupId>
                     <artifactId>kotlin-maven-plugin</artifactId>
                     <version>${kotlin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

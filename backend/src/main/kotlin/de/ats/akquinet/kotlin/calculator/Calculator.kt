@@ -21,4 +21,15 @@ class Calculator {
 
         return dividend.toDouble() / divisor.toDouble()
     }
+
+    /**
+     * method with uncovered branches
+     */
+    fun sum(numbers: List<Number>): Number {
+        if (numbers.isEmpty()) {
+            return 0.toDouble()
+        }
+
+        return numbers.sumByDouble { it.toDouble() }
+    }
 }

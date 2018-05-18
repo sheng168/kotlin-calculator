@@ -32,7 +32,13 @@ class CalculatorTest {
 
     @Test
     fun cannotDivideByZero() {
-        val invalidDivision = { calculator.divide(1, 0) }
-        invalidDivision `should throw` RuntimeException::class
+        val divisionByZero = { calculator.divide(1, 0) }
+        divisionByZero `should throw` RuntimeException::class
+    }
+
+    @Test
+    fun canSum() {
+        val numbers = listOf(0, 2, 3, 5, 12)
+        calculator.sum(numbers) `should equal` 22.toDouble()
     }
 }
