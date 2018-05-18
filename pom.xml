@@ -10,15 +10,31 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>backend</module>
+        <module>rest</module>
+        <module>war</module>
+        <module>integration-tests</module>
+        <module>docker</module>
     </modules>
 
     <properties>
+        <java.ee.version>7.0</java.ee.version>
+        <jackson.version>2.9.5</jackson.version>
         <kotlin.version>1.2.41</kotlin.version>
-        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
+        <!-- Test libs -->
         <junit.version>4.12</junit.version>
         <kluent.version>1.38</kluent.version>
-        <jacoco.version>0.8.1</jacoco.version>
+        <rest.assured.version>3.1.0</rest.assured.version>
+
+        <!-- Plugins -->
+        <dependency.plugin.version>3.1.0</dependency.plugin.version>
+        <docker.rule.version>0.33.0</docker.rule.version>
+        <dockerfile.plugin.version>1.4.0</dockerfile.plugin.version>
+        <failsafe.plugin.version>2.21.0</failsafe.plugin.version>
+        <jacoco.plugin.version>0.8.1</jacoco.plugin.version>
+        <resources.plugin.version>3.0.2</resources.plugin.version>
+        <surefire.plugin.version>2.21.0</surefire.plugin.version>
+        <war.plugin.version>3.2.1</war.plugin.version>
     </properties>
 
     <repositories>
@@ -26,14 +42,56 @@
             <id>jcenter</id>
             <url>https://jcenter.bintray.com/</url>
         </repository>
+        <repository>
+            <id>palantir-docker-compose</id>
+            <url>https://dl.bintray.com/palantir/releases/</url>
+        </repository>
     </repositories>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>de.akquinet.ats.kotlin</groupId>
+                <artifactId>calculator-backend</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>de.akquinet.ats.kotlin</groupId>
+                <artifactId>calculator-rest</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>de.akquinet.ats.kotlin</groupId>
+                <artifactId>calculator-war</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+            </dependency>
+
+            <dependency>
+                <groupId>de.akquinet.ats.kotlin</groupId>
+                <artifactId>calculator-docker</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-stdlib</artifactId>
+                <artifactId>kotlin-stdlib-jdk8</artifactId>
                 <version>${kotlin.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-api</artifactId>
+                <version>${java.ee.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
 
             <dependency>
@@ -49,6 +107,21 @@
                 <version>${kluent.version}</version>
                 <scope>test</scope>
             </dependency>
+
+            <dependency>
+                <groupId>io.rest-assured</groupId>
+                <artifactId>rest-assured</artifactId>
+                <version>${rest.assured.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.palantir.docker.compose</groupId>
+                <artifactId>docker-compose-rule-junit4</artifactId>
+                <version>${docker.rule.version}</version>
+                <scope>test</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -59,11 +132,44 @@
                     <groupId>org.jetbrains.kotlin</groupId>
                     <artifactId>kotlin-maven-plugin</artifactId>
                     <version>${kotlin.version}</version>
+                    <configuration>
+                        <jvmTarget>1.8</jvmTarget>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>${jacoco.version}</version>
+                    <version>${jacoco.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${surefire.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${failsafe.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${war.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${dependency.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.spotify</groupId>
+                    <artifactId>dockerfile-maven-plugin</artifactId>
+                    <version>${dockerfile.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${resources.plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
