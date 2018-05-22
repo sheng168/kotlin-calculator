@@ -11,6 +11,10 @@
 
     <artifactId>calculator-rest</artifactId>
 
+    <properties>
+        <jacoco.report.it>${project.basedir}/../target/jacoco-it.exec</jacoco.report.it>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>

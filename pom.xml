@@ -21,6 +21,10 @@
         <jackson.version>2.9.5</jackson.version>
         <kotlin.version>1.2.41</kotlin.version>
 
+        <!-- -->
+        <jacoco.report.ut>${project.build.directory}/jacoco-ut.exec</jacoco.report.ut>
+        <jacoco.report.it>${project.build.directory}/jacoco-it.exec</jacoco.report.it>
+
         <!-- Test libs -->
         <junit.version>4.12</junit.version>
         <kluent.version>1.38</kluent.version>
@@ -173,6 +177,39 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <!-- Jacoco for Unit-Tests -->
+                    <execution>
+                        <id>jacoco-agent-ut</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <append>true</append>
+                            <destFile>${jacoco.report.ut}</destFile>
+                            <propertyName>surefireArgLine</propertyName>
+                        </configuration>
+                    </execution>
+                    <!-- Jacoco for Integration-Tests -->
+                    <execution>
+                        <id>jacoco-agent-it</id>
+                        <goals>
+                            <goal>prepare-agent-integration</goal>
+                        </goals>
+                        <configuration>
+                            <append>true</append>
+                            <destFile>${jacoco.report.it}</destFile>
+                            <propertyName>failsafeArgLine</propertyName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
 </project>

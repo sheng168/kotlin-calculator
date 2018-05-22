@@ -12,7 +12,7 @@
     <artifactId>integration-tests</artifactId>
 
     <properties>
-        <kotlin.version>1.2.41</kotlin.version>
+        <jacoco.report.it>${project.basedir}/../target/jacoco-it.exec</jacoco.report.it>
     </properties>
 
     <dependencies>
@@ -72,39 +72,6 @@
         </testResources>
 
         <plugins>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <executions>
-                    <!-- Jacoco for Integration-Tests -->
-                    <execution>
-                        <id>pre-integration-test</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                        <configuration>
-                            <destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>
-                            <!--
-                                Sets the name of the property containing the settings
-                                for JaCoCo runtime agent.
-                            -->
-                            <propertyName>failsafeArgLine</propertyName>
-                            <port>6301</port>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>create-coverage-report-for-integration-tests</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>report-aggregate</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
