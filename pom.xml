@@ -21,9 +21,14 @@
         <jackson.version>2.9.5</jackson.version>
         <kotlin.version>1.2.41</kotlin.version>
 
-        <!-- -->
+        <!-- Sonar configuration -->
         <jacoco.report.ut>${project.build.directory}/jacoco-ut.exec</jacoco.report.ut>
         <jacoco.report.it>${project.build.directory}/jacoco-it.exec</jacoco.report.it>
+        <sonar.language>kotlin</sonar.language>
+        <sonar.kotlin.sources>${project.basedir}/src/main/kotlin</sonar.kotlin.sources>
+        <sonar.kotlin.binaries>${project.build.directory}/classes</sonar.kotlin.binaries>
+        <sonar.kotlin.tests>${project.basedir}/src/test/kotlin</sonar.kotlin.tests>
+        <sonar.jacoco.reportPaths>${jacoco.report.ut},${jacoco.report.it}</sonar.jacoco.reportPaths>
 
         <!-- Test libs -->
         <junit.version>4.12</junit.version>
