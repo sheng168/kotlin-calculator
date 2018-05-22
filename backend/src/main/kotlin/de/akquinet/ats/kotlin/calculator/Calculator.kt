@@ -16,7 +16,7 @@ class Calculator {
 
     fun divide(dividend: Double, divisor: Double): Double {
         if (divisor == 0.0) {
-            throw RuntimeException("Divisor cannot be zero.")
+            throw CalculationException("Cannot divide by zero.")
         }
 
         return dividend / divisor
@@ -25,9 +25,9 @@ class Calculator {
     /**
      * method with uncovered branches
      */
-    fun sum(numbers: List<Double>): Double {
-        if (numbers.isEmpty()) {
-            return 0.0
+    fun sum(numbers: List<Double>?): Double {
+        if (numbers == null || numbers.isEmpty()) {
+            throw CalculationException("Cannot calculate sum of nothing.")
         }
 
         return numbers.sum()

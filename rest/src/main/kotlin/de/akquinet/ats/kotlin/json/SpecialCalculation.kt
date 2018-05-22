@@ -9,5 +9,13 @@ import javax.xml.bind.annotation.XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 class SpecialCalculation {
 
-    @XmlElement val numbers: List<Double> = emptyList()
+    @XmlElement var numbers: List<Double>? = null
+
+    constructor()
+
+    constructor(numbers: List<Double>) : this() {
+        this.numbers = numbers
+    }
+
+
 }
