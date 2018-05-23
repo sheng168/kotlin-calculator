@@ -7,16 +7,14 @@ import javax.xml.bind.annotation.XmlRootElement
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-class SpecialCalculation {
+class CalculationError {
 
     @XmlElement
-    var numbers: List<Double> = mutableListOf()
+    var message: String = "not set"
 
-    private constructor()
+    constructor()
 
-    constructor(numbers: List<Double>) : this() {
-        this.numbers = numbers
+    constructor(message: String) : this() {
+        this.message = message
     }
-
-
 }

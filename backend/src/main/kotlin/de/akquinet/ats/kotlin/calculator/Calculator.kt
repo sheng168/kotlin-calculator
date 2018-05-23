@@ -25,8 +25,8 @@ class Calculator {
     /**
      * method with uncovered branches
      */
-    fun sum(numbers: List<Double>?): Double {
-        if (numbers == null || numbers.isEmpty()) {
+    fun sum(numbers: List<Double>): Double {
+        if (numbers.isEmpty()) {
             throw CalculationException("Cannot calculate sum of nothing.")
         }
 

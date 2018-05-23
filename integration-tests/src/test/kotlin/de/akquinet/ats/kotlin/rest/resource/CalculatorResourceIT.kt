@@ -8,7 +8,6 @@ import io.restassured.http.ContentType
 import org.amshove.kluent.`should be equal to`
 import org.apache.commons.lang3.StringUtils
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 
 
@@ -22,7 +21,7 @@ class CalculatorResourceIT {
 
         val offset = System.getProperties().getProperty("jboss.socket.binding.port-offset")
         if (StringUtils.isNotBlank(offset)) {
-            return port + Integer.parseInt(offset)
+           return port + Integer.parseInt(offset)
         }
 
         return port
@@ -85,14 +84,13 @@ class CalculatorResourceIT {
     }
 
     @Test
-    @Ignore
     fun `can GET division by zero`() {
         val body = StandardCalculation(first = 3.0, second = 0.0)
-        given().body(body).accept(ContentType.XML).contentType(ContentType.XML)
+        given().body(body).contentType(ContentType.XML).accept(ContentType.XML)
                 .`when`().post("/divide")
                 .then().assertThat().statusCode(400).and()
-                .contentType(ContentType.TEXT)
-                .extract().asString() `should be equal to` "Cannot divide by zero."
+                .contentType(ContentType.XML)
+                .extract().xmlPath().getString("message") `should be equal to` "Cannot divide by zero."
 
     }
 
@@ -105,5 +103,15 @@ class CalculatorResourceIT {
                 .contentType(ContentType.XML)
                 .extract().xmlPath().getDouble("result") `should be equal to` 6.0
 
+    }
+
+    @Test
+    fun `can GET sum with empty list`() {
+        val body = SpecialCalculation(emptyList())
+        given().body(body).contentType(ContentType.XML).accept(ContentType.XML)
+                .`when`().post("/sum")
+                .then().assertThat().statusCode(400).and()
+                .contentType(ContentType.XML)
+                .extract().xmlPath().getString("message") `should be equal to` "Cannot calculate sum of nothing."
     }
 }
