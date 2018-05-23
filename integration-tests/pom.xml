@@ -14,6 +14,11 @@
     <properties>
         <jacoco.report.ut>${project.basedir}/../target/jacoco-ut.exec</jacoco.report.ut>
         <jacoco.report.it>${project.basedir}/../target/jacoco-it.exec</jacoco.report.it>
+        <sonar.jacoco.reportPaths>${jacoco.report.ut},${jacoco.report.it}</sonar.jacoco.reportPaths>
+
+        <eap.home>${project.build.directory}/jboss-eap-${jboss.eap.server.version}/</eap.home>
+        <jboss.port.offset>200</jboss.port.offset>
+        <jboss.management.port>10190</jboss.management.port>
     </properties>
 
     <dependencies>
@@ -29,7 +34,8 @@
 
         <dependency>
             <groupId>de.akquinet.ats.kotlin</groupId>
-            <artifactId>calculator-docker</artifactId>
+            <artifactId>calculator-war</artifactId>
+            <type>war</type>
         </dependency>
 
         <dependency>
@@ -50,20 +56,21 @@
         </dependency>
 
         <dependency>
-            <groupId>com.palantir.docker.compose</groupId>
-            <artifactId>docker-compose-rule-junit4</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.amshove.kluent</groupId>
             <artifactId>kluent</artifactId>
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.jboss.eap</groupId>
+            <artifactId>jboss-eap</artifactId>
+            <type>zip</type>
+        </dependency>
+
     </dependencies>
 
     <build>
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
         <testResources>
             <testResource>
@@ -74,8 +81,35 @@
 
         <plugins>
             <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <jboss.socket.binding.port-offset>${jboss.port.offset}</jboss.socket.binding.port-offset>
+                    </systemPropertyVariables>
+                    <trimStackTrace>false</trimStackTrace>
+                </configuration>
                 <executions>
                     <execution>
                         <id>integration-tests</id>
@@ -90,19 +124,87 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-maven-plugin</artifactId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <!-- get eap and extract -->
+                    <execution>
+                        <id>unpack-jboss</id>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <includeArtifactIds>jboss-eap</includeArtifactIds>
+                            <outputDirectory>${project.build.directory}/</outputDirectory>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jboss.modules</groupId>
+                        <artifactId>jboss-modules</artifactId>
+                        <version>1.7.0.Final</version>
+                    </dependency>
+                </dependencies>
+
+                <configuration>
+                    <jboss-home>${eap.home}</jboss-home>
+                    <serverConfig>standalone.xml</serverConfig>
+                    <port>${jboss.management.port}</port>
+
+                    <server-args>
+                        <server-arg>-Djboss.socket.binding.port-offset=${jboss.port.offset}</server-arg>
+                        <server-arg>-Duser.country=DE -Duser.language=de</server-arg>
+                    </server-args>
+
+                    <javaOpts>${argLine}</javaOpts>
+
+                </configuration>
+
                 <executions>
                     <execution>
-                        <id>test-compile</id>
-                        <phase>test-compile</phase>
+                        <id>start-server-config</id>
+                        <phase>prepare-package</phase>
+
                         <goals>
-                            <goal>test-compile</goal>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- EAP startup and webapp deployment for IT -->
+                    <execution>
+                        <id>deploy-app</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>deploy-artifact</goal>
+                        </goals>
+
+                        <configuration>
+                            <groupId>de.akquinet.ats.kotlin</groupId>
+                            <artifactId>calculator-war</artifactId>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>stop server</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>shutdown</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 

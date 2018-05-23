@@ -1,16 +1,14 @@
 package de.akquinet.ats.kotlin.rest.resource
 
-import com.palantir.docker.compose.DockerComposeRule
-import com.palantir.docker.compose.connection.waiting.HealthChecks
 import de.akquinet.ats.kotlin.json.SpecialCalculation
 import de.akquinet.ats.kotlin.json.StandardCalculation
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.amshove.kluent.`should be equal to`
+import org.apache.commons.lang3.StringUtils
 import org.junit.Before
 import org.junit.Ignore
-import org.junit.Rule
 import org.junit.Test
 
 
@@ -19,18 +17,20 @@ class CalculatorResourceIT {
 
     val SERVICE = "appserver"
 
-    @Rule @JvmField
-    val docker: DockerComposeRule = DockerComposeRule.builder()
-            .file(CalculatorResourceIT::class.java.getResource("/docker-compose.yml").file)
-            .waitingForService(SERVICE,
-                    HealthChecks.toRespondOverHttp(8080) {
-                        port -> port.inFormat("http://\$HOST:\$EXTERNAL_PORT")
-                    }).build()
+    private fun detectHttpPort(): Int {
+        val port = 8080
 
+        val offset = System.getProperties().getProperty("jboss.socket.binding.port-offset")
+        if (StringUtils.isNotBlank(offset)) {
+            return port + Integer.parseInt(offset)
+        }
+
+        return port
+    }
 
     fun getUrl(url: String): String {
-        val proxy = docker.containers().container(SERVICE).port(8080)
-        return proxy.inFormat("http://\$HOST:\$EXTERNAL_PORT$url")
+        val port = detectHttpPort()
+        return "http://localhost:$port$url"
     }
 
     @Before

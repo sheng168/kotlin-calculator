@@ -1,7 +1,0 @@
-version: "3.4"
-
-services:
-  appserver:
-    image: akquinet/kotlin-calculator:${project.version}
-    ports:
-      - 8081:8080
