@@ -13,8 +13,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <jacoco.report.ut>${project.basedir}/../target/jacoco-ut.exec</jacoco.report.ut>
-        <jacoco.report.it>${project.basedir}/../target/jacoco-it.exec</jacoco.report.it>
+        <sonar.skip>true</sonar.skip>
     </properties>
 
     <dependencies>

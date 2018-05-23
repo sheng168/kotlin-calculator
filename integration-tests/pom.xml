@@ -12,10 +12,7 @@
     <artifactId>integration-tests</artifactId>
 
     <properties>
-        <jacoco.report.ut>${project.basedir}/../target/jacoco-ut.exec</jacoco.report.ut>
         <jacoco.report.it>${project.basedir}/../target/jacoco-it.exec</jacoco.report.it>
-        <sonar.jacoco.reportPaths>${jacoco.report.ut},${jacoco.report.it}</sonar.jacoco.reportPaths>
-
         <eap.home>${project.build.directory}/jboss-eap-${jboss.eap.server.version}/</eap.home>
         <jboss.port.offset>200</jboss.port.offset>
         <jboss.management.port>10190</jboss.management.port>
@@ -25,22 +22,32 @@
         <dependency>
             <groupId>de.akquinet.ats.kotlin</groupId>
             <artifactId>calculator-backend</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>de.akquinet.ats.kotlin</groupId>
             <artifactId>calculator-rest</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>de.akquinet.ats.kotlin</groupId>
             <artifactId>calculator-war</artifactId>
+            <scope>test</scope>
             <type>war</type>
         </dependency>
 
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test-junit</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -64,21 +71,13 @@
         <dependency>
             <groupId>com.jboss.eap</groupId>
             <artifactId>jboss-eap</artifactId>
+            <scope>test</scope>
             <type>zip</type>
         </dependency>
 
     </dependencies>
 
     <build>
-        <sourceDirectory>src/main/kotlin</sourceDirectory>
-        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
-        <testResources>
-            <testResource>
-                <filtering>true</filtering>
-                <directory>src/test/resources</directory>
-            </testResource>
-        </testResources>
-
         <plugins>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -112,14 +111,14 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>integration-tests</id>
+                        <id>run-integration-tests</id>
                         <goals>
                             <goal>integration-test</goal>
                             <goal>verify</goal>
                         </goals>
                         <configuration>
+                            <skip>${skipIT}</skip>
                             <argLine>${failsafeArgLine}</argLine>
-                            <skipTests>${skip.integration.tests}</skipTests>
                         </configuration>
                     </execution>
                 </executions>
@@ -167,31 +166,24 @@
                         <server-arg>-Duser.country=DE -Duser.language=de</server-arg>
                     </server-args>
 
-                    <javaOpts>${argLine}</javaOpts>
+                    <javaOpts>${failsafeArgLine}</javaOpts>
 
                 </configuration>
 
                 <executions>
-                    <execution>
-                        <id>start-server-config</id>
-                        <phase>prepare-package</phase>
-
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-
                     <!-- EAP startup and webapp deployment for IT -->
                     <execution>
-                        <id>deploy-app</id>
+                        <id>start-server-and-deploy-app</id>
                         <phase>pre-integration-test</phase>
                         <goals>
+                            <goal>start</goal>
                             <goal>deploy-artifact</goal>
                         </goals>
 
                         <configuration>
                             <groupId>de.akquinet.ats.kotlin</groupId>
                             <artifactId>calculator-war</artifactId>
+                            <packaging>war</packaging>
                         </configuration>
                     </execution>
 

@@ -12,7 +12,6 @@
     <artifactId>calculator-backend</artifactId>
 
     <properties>
-        <jacoco.report.ut>${project.basedir}/../target/jacoco-ut.exec</jacoco.report.ut>
         <jacoco.report.it>${project.basedir}/../target/jacoco-it.exec</jacoco.report.it>
     </properties>
 
@@ -20,6 +19,11 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test-junit</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
