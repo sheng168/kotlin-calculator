@@ -1,9 +1,9 @@
 ## Installation Sonar
-Ein Sonar-Server kann mit Hilfe von Docker recht einfach aufgesetzt werden, etwa wie folgt:
+Create a Sonar server
 
     $ docker run -d --name sonarqube -p 9000:9000 -p 9092:9092 sonarqube:lts
     
-Zusätzlich muss noch das Kotlin-Plugin installiert werden, etwa wie folgt:
+Install the Kotlin plugin
 
     $ git clone https://github.com/arturbosch/sonar-kotlin
     $ cd sonar-kotlin
@@ -12,4 +12,4 @@ Zusätzlich muss noch das Kotlin-Plugin installiert werden, etwa wie folgt:
     $ docker stop sonarqube
     $ docker start sonarqube
 
-Nun kann mittels http://localhost:9000/ auf Sonar zugegriffen werden.
+Access Sonar via http://localhost:9000/
