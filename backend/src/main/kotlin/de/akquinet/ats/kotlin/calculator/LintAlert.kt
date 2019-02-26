@@ -16,7 +16,7 @@ class LintAlert {
         }
 
         try {
-
+            println("ok")
         }catch (e: Exception) {
 
         }
