@@ -15,8 +15,6 @@ class LintAlert {
             println("no")
         }
 
-        val magicNumber = 4711
-
         try {
 
         }catch (e: Exception) {
