@@ -221,7 +221,7 @@
                             <propertyName>surefireArgLine</propertyName>
                         </configuration>
                     </execution>
-                    <!-- Jacoco for Integration-Tests -->
+                    <!-- Jacoco for Integration-Tests --> 
                     <execution>
                         <id>jacoco-agent-it</id>
                         <goals>
